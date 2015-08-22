@@ -107,7 +107,7 @@ sf::Vector2i Pather::getEndNodePosition() {
 	return end_node->xy;
 }
 
-std::vector<int> Pather::pathTo(sf::Vector2i start, sf::Vector2i end) {
+std::deque<int> Pather::pathTo(sf::Vector2i start, sf::Vector2i end) {
 
 	// Clear the visited map for erroneous data
 	for (int i = 0; i < Map::CELLS_WIDTH; i++) {
@@ -129,13 +129,13 @@ std::vector<int> Pather::pathTo(sf::Vector2i start, sf::Vector2i end) {
 	openList.emplace(start_node, 0);
 
 	early_exit = false;
-	//path_list = Loop();
+	path_list = loop();
 
 	return path_list;
 }
 
 
-std::vector<int> Pather::loop() {
+std::deque<int> Pather::loop() {
 	while (!openList.empty() && !early_exit) {
 		// Early exit jankyness, need to change this
 		if (closedList.size() > 3000) {
@@ -172,17 +172,17 @@ std::vector<int> Pather::loop() {
 		}
 	}
 
-	std::vector<int> return_path = returnPath();
+	std::deque<int> return_path = returnPath();
 	if (no_path || return_path.empty()) {
-		return std::vector<int>(0, 0);
+		return std::deque<int>();
 		std::cout << " no return path " << std::endl;
 	}
 
 	return return_path;
 }
 
-std::vector<int> Pather::returnPath() {
-	std::vector<int> path;
+std::deque<int> Pather::returnPath() {
+	std::deque<int> path;
 
 	while (active_node != nullptr) {
 		path.push_back(active_node->cameFrom);

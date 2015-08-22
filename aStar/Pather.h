@@ -37,9 +37,9 @@ public:
 	std::unordered_map<node*, int> closedList;
 	int visitedMap[App::WINDOW_HEIGHT][App::WINDOW_WIDTH];
 
-	 std::vector<int> pathTo(sf::Vector2i start, sf::Vector2i end);
-	 std::vector<int> loop();
-	 std::vector<int> returnPath();
+	 std::deque<int> pathTo(sf::Vector2i start, sf::Vector2i end);
+	 std::deque<int> loop();
+	 std::deque<int> returnPath();
 
 	 sf::Vector2i getEndNodePosition();
 
@@ -51,7 +51,7 @@ public:
 
 private:
 
-	std::vector<int> path_list;
+	std::deque<int> path_list;
 	node* end_node;
 
 };

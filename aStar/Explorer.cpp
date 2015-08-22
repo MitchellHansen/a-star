@@ -75,5 +75,6 @@ bool Explorer::move() {
 // A*
 bool Explorer::plan(sf::Vector2i destination_) {
 
+	
 	return true;
 }
