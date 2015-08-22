@@ -1,7 +1,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "App.h"
-#include "Pather.h"
 
 int main()
 {

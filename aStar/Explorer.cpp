@@ -1,11 +1,10 @@
 #include "Explorer.h"
 #include <iostream>
 
-Explorer::Explorer(Map* map_){
+Explorer::Explorer(Map* map_) {
 	color = sf::Color::Blue;
 	position = sf::Vector2i(10, 10);
 	map = map_;
-	pather = new Pather(map_);
 }
 
 
@@ -25,7 +24,7 @@ bool Explorer::move() {
 	// While there are moves for us to take
 	if (!movement_stack.empty()) {
 		bool valid = false; // If the next move is valid, collision
-		int x = movement_stack.front();
+		int x = movement_stack.top();
 
 		switch (x) {
 
@@ -60,13 +59,13 @@ bool Explorer::move() {
 			std::cout << "Path blocked" << std::endl;
 			// Flush the moves list
 			while(!movement_stack.empty()) {
-				movement_stack.pop_front();
+				movement_stack.pop();
 			}
 			return false;
 		}
 
 		// If everything went well, pop and return true
-		movement_stack.pop_front();
+		movement_stack.pop();
 		return true;
 	}
 	else
@@ -75,6 +74,6 @@ bool Explorer::move() {
 
 // A*
 bool Explorer::plan(sf::Vector2i destination_) {
-	movement_stack = pather->pathTo(position, destination_);
+
 	return true;
 }
