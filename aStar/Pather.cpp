@@ -33,7 +33,7 @@ void node::neighbors() {
 		double v = dv;
 
 		// Take that value and create a new node
-		pather->openList.emplace(new node(dest0XY, v, 3, 1, pather->active_node, pather), v);
+		pather->openList.emplace(new node(dest0XY, v, 0, 1, pather->active_node, pather), v);
 
 		// Set that tile as visited so we don't get stuck in a loop
 		pather->visitedMap(dest0XY.x, dest0XY.y) = 1;
@@ -51,7 +51,7 @@ void node::neighbors() {
 		double v = dv;
 
 		// Take that value and create a new node
-		pather->openList.emplace(new node(dest1XY, v, 4, 1, pather->active_node, pather), v);
+		pather->openList.emplace(new node(dest1XY, v, 1, 1, pather->active_node, pather), v);
 
 		// Set that tile as visited so we don't get stuck in a loop
 		pather->visitedMap(dest1XY.x, dest1XY.y) = 1;
@@ -69,7 +69,7 @@ void node::neighbors() {
 		double v = dv;
 
 		// Take that value and create a new node
-		pather->openList.emplace(new node(dest2XY, v, 1, 1, pather->active_node, pather), v);
+		pather->openList.emplace(new node(dest2XY, v, 2, 1, pather->active_node, pather), v);
 
 		// Set that tile as visited so we don't get stuck in a loop
 		pather->visitedMap(dest2XY.x, dest2XY.y) = 1;
@@ -87,7 +87,7 @@ void node::neighbors() {
 		double v = dv;
 
 		// Take that value and create a new node
-		pather->openList.emplace(new node(dest3XY, v, 2, 1, pather->active_node, pather), v);
+		pather->openList.emplace(new node(dest3XY, v, 3, 1, pather->active_node, pather), v);
 
 		// Set that tile as visited so we don't get stuck in a loop
 		pather->visitedMap(dest3XY.x, dest3XY.y) = 1;

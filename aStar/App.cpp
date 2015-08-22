@@ -34,7 +34,7 @@ void App::Input() {
 				explorer->setDestination(sf::Vector2i(20, 20));
 			}
 			if (event.key.code == sf::Keyboard::W) {
-				explorer->setDestination(sf::Vector2i(200, 200));
+				explorer->setDestination(sf::Vector2i(50, 50));
 			}
 			if (event.key.code == sf::Keyboard::E) {
 				explorer->setDestination(sf::Vector2i(100, 12));
