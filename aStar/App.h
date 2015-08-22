@@ -3,6 +3,16 @@
 #include "Map.h"
 #include "Explorer.h"
 
+template<typename T, int width, int height>
+class MultiArray {
+private:
+	typedef T cols[height];
+	cols * data;
+public:
+	T& operator() (int x, int y) { return data[x][y]; }
+	MultiArray() { data = new cols[width]; }
+	~MultiArray() { delete[] data; }
+};
 class App {
 public:
 	// Constants

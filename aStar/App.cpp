@@ -30,8 +30,14 @@ void App::Input() {
 		if (event.type == sf::Event::Closed)
 			window->close();
 		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::Space) {
-				
+			if (event.key.code == sf::Keyboard::Q) {
+				explorer->setDestination(sf::Vector2i(20, 20));
+			}
+			if (event.key.code == sf::Keyboard::W) {
+				explorer->setDestination(sf::Vector2i(200, 200));
+			}
+			if (event.key.code == sf::Keyboard::E) {
+				explorer->setDestination(sf::Vector2i(100, 12));
 			}
 		}
 	}
@@ -39,6 +45,7 @@ void App::Input() {
 
 void App::Update(double step_size) {
 	Input();
+	explorer->move();
 }
 
 void App::Render() {
@@ -91,7 +98,7 @@ void App::Render() {
 		}
 	}
 	
-	// Draw the player
+	// Draw the explorer
 	
 	for (int x2 = 1; x2 < 5; x2++) {
 		for (int y2 = 1; y2 < 5; y2++) {

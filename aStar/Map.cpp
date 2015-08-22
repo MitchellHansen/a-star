@@ -22,8 +22,8 @@ Tile* Map::getTile(sf::Vector2i position_) {
 }
 
 bool Map::isTileSolid(sf::Vector2i position_) {
-	if (position_.x > CELLS_WIDTH || position_.x < 0
-		|| position_.y > CELLS_HEIGHT || position_.y < 0) {
+	if (position_.x >= CELLS_WIDTH || position_.x < 0
+		|| position_.y >= CELLS_HEIGHT || position_.y < 0) {
 		return true;
 	}
 	else 
@@ -44,7 +44,7 @@ void Map::Init() {
 	for (int x = 0; x < CELLS_WIDTH; x++) {
 		for (int y = 0; y < CELLS_HEIGHT; y++) {
 			q = rand() % 100; 
-			if (q > 70) {
+			if (q > 90) {
 				tileArray[x][y] = new Tile(true, 100.0, sf::Color::Cyan);
 			}
 			else {
