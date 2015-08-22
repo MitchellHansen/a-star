@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <stack>
 #include "Map.h"
+#include "Pather.h"
 
 class Explorer {
 public:
@@ -13,8 +14,9 @@ private:
 	sf::Color color;
 	sf::Vector2i position;
 	Map* map;
+	Pather* pather;
 
-	std::stack<int> movement_stack;
+	std::deque<int> movement_stack;
 	bool move();
 	bool plan(sf::Vector2i destination_);
 };

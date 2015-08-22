@@ -22,7 +22,7 @@ private:
 	sf::Uint8* _pixelArray;
 	sf::Sprite pixel_array_sprite;
 	sf::Texture pixel_array_texture;
-
+	
 	Explorer* explorer;
 
 	// Art assets
