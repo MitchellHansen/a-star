@@ -29,6 +29,11 @@ void App::Input() {
 	while (window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			window->close();
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			sf::Vector2i mouse_position = sf::Mouse::getPosition(*window);
+			explorer->setDestination(sf::Vector2i(mouse_position.x/ 5, mouse_position.y/ 5)); 
+		}
+		
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Q) {
 				explorer->setDestination(sf::Vector2i(20, 20));
@@ -99,7 +104,6 @@ void App::Render() {
 	}
 	
 	// Draw the explorer
-	
 	for (int x2 = 1; x2 < 5; x2++) {
 		for (int y2 = 1; y2 < 5; y2++) {
 

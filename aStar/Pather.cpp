@@ -146,11 +146,11 @@ std::deque<int> Pather::loop() {
 	
 	while (!openList.empty() && !early_exit) {	
 		// Early exit jankyness, need to change this
-		//if (closedList.size() > 3000) {
-		//	no_path = true;
-		//	early_exit = true;
-		//	break;
-		//}
+		if (closedList.size() > 1000) {
+			no_path = true;
+			early_exit = true;
+			break;
+		}
 		if (active_node->xy.x == end_node->xy.x && active_node->xy.y == end_node->xy.y) {
 			early_exit = true;
 			break;
