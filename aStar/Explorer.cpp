@@ -3,7 +3,7 @@
 #include "Pather.h"
 
 Explorer::Explorer(Map* map_) {
-	color = sf::Color::Blue;
+	color = sf::Color::Yellow;
 	position = sf::Vector2i(6, 10);
 	map = map_;
 }
@@ -22,11 +22,11 @@ sf::Color Explorer::getColor() {
 
 
 void Explorer::setDestination(sf::Vector2i destination_) {
+	// Call a* to get path
 	plan(destination_);
 }
 
 bool Explorer::move() {
-
 
 	// While there are moves for us to take
 	if (!movement_stack.empty()) {
@@ -35,9 +35,9 @@ bool Explorer::move() {
 
 		switch (x) {
 		case 0: // North
-			if (!map->getTile(position.x, position.y - 1)->isSolid()) {
-				valid = true;
-				position = sf::Vector2i(position.x, position.y - 1);
+			if (!map->getTile(position.x, position.y - 1)->isSolid()) {  // If the tile isn't solid
+				valid = true;											 // Set the move to valid
+				position = sf::Vector2i(position.x, position.y - 1);	 // Update the Explorers position
 			}
 			break;
 		case 1: // East
@@ -79,10 +79,13 @@ bool Explorer::move() {
 		return false;
 }
 
-// A*
 bool Explorer::plan(sf::Vector2i destination_) {
+	
+	// Create a new pather with the map data
 	Pather pather(map);
-	movement_stack = pather.pathTo(position, destination_);
+
+	// Get the movement list from the pather
+	movement_stack = pather.getPathTo(position, destination_);
 	
 	return true;
 }

@@ -1,137 +1,46 @@
 #include "Pather.h"
 #include <iostream>
 
-node::node(sf::Vector2i XY, double h, int cF, int cL, node* p, Pather* pather_) {
-	xy = XY;
-	hueristic = h;
-	cameFrom = cF;
-	closedList = cL;
-	parent = p;
-	pather = pather_;
-}
-node::node() {
-	
-}
-node::~node() {
-	
-}
-
-void node::neighbors() {
-
-	int x = pather->getEndNodePosition().x;
-	int y = pather->getEndNodePosition().y;
-
-	sf::Vector2i dest0XY(xy.x, xy.y - 1); // North
-	if (!pather->map->isTileSolid(dest0XY) && pather->visitedMap(dest0XY.x, dest0XY.y) != 1) {
-		// If so, find the distance between this node and the end node, the hueristic
-		int tempx = (x - dest0XY.x);
-		int tempy = (y - dest0XY.y);
-
-		// I think dv is the hueristic??
-		double dv = sqrt((tempx * tempx) + (tempy * tempy));
-
-		double v = dv;
-
-		// Take that value and create a new node
-		pather->openList.emplace(new node(dest0XY, v, 0, 1, pather->active_node, pather), v);
-
-		// Set that tile as visited so we don't get stuck in a loop
-		pather->visitedMap(dest0XY.x, dest0XY.y) = 1;
-	}
-
-	sf::Vector2i dest1XY(xy.x + 1, xy.y); // East
-	if (!pather->map->isTileSolid(dest1XY) && pather->visitedMap(dest1XY.x, dest1XY.y) != 1) {
-		// If so, find the distance between this node and the end node, the hueristic
-		int tempx = (x - dest1XY.x);
-		int tempy = (y - dest1XY.y);
-
-		// I think dv is the hueristic??
-		double dv = sqrt((tempx * tempx) + (tempy * tempy));
-
-		double v = dv;
-
-		// Take that value and create a new node
-		pather->openList.emplace(new node(dest1XY, v, 1, 1, pather->active_node, pather), v);
-
-		// Set that tile as visited so we don't get stuck in a loop
-		pather->visitedMap(dest1XY.x, dest1XY.y) = 1;
-	}
-
-	sf::Vector2i dest2XY(xy.x, xy.y + 1); // South
-	if (!pather->map->isTileSolid(dest2XY) && pather->visitedMap(dest2XY.x, dest2XY.y) != 1) {
-		// If so, find the distance between this node and the end node, the hueristic
-		int tempx = (x - dest2XY.x);
-		int tempy = (y - dest2XY.y);
-
-		// I think dv is the hueristic??
-		double dv = sqrt((tempx * tempx) + (tempy * tempy));
-
-		double v = dv;
-
-		// Take that value and create a new node
-		pather->openList.emplace(new node(dest2XY, v, 2, 1, pather->active_node, pather), v);
-
-		// Set that tile as visited so we don't get stuck in a loop
-		pather->visitedMap(dest2XY.x, dest2XY.y) = 1;
-	}
-
-	sf::Vector2i dest3XY(xy.x - 1, xy.y); // West
-	if (!pather->map->isTileSolid(dest3XY) && pather->visitedMap(dest3XY.x, dest3XY.y) != 1) {
-		// If so, find the distance between this node and the end node, the hueristic
-		int tempx = (x - dest3XY.x);
-		int tempy = (y - dest3XY.y);
-
-		// I think dv is the hueristic??
-		double dv = sqrt((tempx * tempx) + (tempy * tempy));
-
-		double v = dv;
-
-		// Take that value and create a new node
-		pather->openList.emplace(new node(dest3XY, v, 3, 1, pather->active_node, pather), v);
-
-		// Set that tile as visited so we don't get stuck in a loop
-		pather->visitedMap(dest3XY.x, dest3XY.y) = 1;
-	}
-}
 
 
 
 Pather::Pather(Map* map_) {
 	map = map_;
-	//visitedMap = new MultiArray<int, App::WINDOW_HEIGHT, App::WINDOW_WIDTH>();
 }
 
 Pather::~Pather() {
 }
 
 sf::Vector2i Pather::getEndNodePosition() {
-	return end_node->xy;
+	return end_node->getPosition();
 }
 
-std::deque<int> Pather::pathTo(sf::Vector2i start, sf::Vector2i end) {
+node* Pather::getActiveNode() {
+	return active_node;
+}
 
-	
-	// Clear the visited map for erroneous data
+std::deque<int> Pather::getPathTo(sf::Vector2i start, sf::Vector2i end) {
+
+	// Clear the visited map of erroneous data
 	for (int i = 0; i < Map::CELLS_WIDTH; i++) {
 		for (int l = 0; l < Map::CELLS_HEIGHT; l++) {
-			visitedMap(i, l) = 0;
+			visited_map(i, l) = 0;
 		}
 	}
-
-	std::cout << visitedMap(10, 163);
 	
 	// Place the start and end nodes
-	start_node = new node(start, 7000, 0, 0, nullptr, this);
-	end_node = new node(end, 0, 0, 0, nullptr, this);
+	start_node = new node(start, 7000, 0, nullptr, this);
+	end_node = new node(end, 0, 0, nullptr, this);
 
 	// Set the entry point, clean up any stray data from last run
 	active_node = start_node;
-	openList.clear();
-	closedList.clear();
+	open_list.clear();
+	closed_list.clear();
 
-	// Seed for the loop
-	openList.emplace(start_node, start_node->hueristic);
+	// Seed for the loop, hueristic is intentionally high
+	open_list.emplace(start_node, start_node->getHueristic());
 
+	// Set up the early exit, and enter into the loop
 	early_exit = false;
 	path_list = loop();
 
@@ -141,26 +50,29 @@ std::deque<int> Pather::pathTo(sf::Vector2i start, sf::Vector2i end) {
 
 std::deque<int> Pather::loop() {
 
-	// Damn thing keeps falling out of scope
-	
-	
-	while (!openList.empty() && !early_exit) {	
-		// Early exit jankyness, need to change this
-		if (closedList.size() > 1000) {
-			no_path = true;
-			early_exit = true;
+	while (!open_list.empty() && !early_exit) {	
+		
+		if (closed_list.size() > 1000) {           // Quits when the path gets to be over 1000 long, janky 
+			no_path = true;						  // Signal no path was found
+			early_exit = true;					  // Break
 			break;
 		}
-		if (active_node->xy.x == end_node->xy.x && active_node->xy.y == end_node->xy.y) {
-			early_exit = true;
-			break;
-		}
-		else {
-			// Find the pair with the lowest hueristic
-			// 5/10	
-			std::pair<node*, double> bestMin(start_node, 10000);
 
-			for (auto testMin: openList) {
+		// Check to see if we're at our destination, break if we are
+		if (active_node->getPosition().x == end_node->getPosition().x && active_node->getPosition().y == end_node->getPosition().y) {
+			early_exit = true;
+			break;
+		}
+
+		// If we didn't get held up before, do a round of a*
+		else {
+
+			// Find the pair with the lowest hueristic
+			std::pair<node*, double> bestMin(start_node, 10000);   // Get a clean value for the comparison
+
+			// Compare all the values in openList for the one with the smallest hueristic
+			// O(n) complexity so it can get verrrrryyyy slow
+			for (auto testMin: open_list) {
 				if (bestMin.second >= testMin.second)
 					bestMin = testMin;
 			}
@@ -169,22 +81,23 @@ std::deque<int> Pather::loop() {
 			active_node = bestMin.first;
 
 			// Find the neighbors for that node
-			active_node->neighbors();
+			active_node->getNewNeighbors();
 
 			// Remove the active node from the openlist as you have visited it and called its neighbors
-			openList.erase(active_node);
+			open_list.erase(active_node);
 
 			// Check to see if the node has already been added to the closed list, if not, add it
-			if (closedList.count(active_node) == 0) {
-				closedList.emplace(active_node, active_node->hueristic);
+			if (closed_list.count(active_node) == 0) {
+				closed_list.emplace(active_node, active_node->getHueristic());
 			}
 
 			
 		}
 	}
 
+	// When we're done, get the return path
 	std::deque<int> return_path = returnPath();
-	if (no_path || return_path.empty()) {
+	if (no_path || return_path.empty()) {              // If we had an error, display it
 		return std::deque<int>();
 		std::cout << " no return path " << std::endl;
 	}
@@ -193,12 +106,14 @@ std::deque<int> Pather::loop() {
 }
 
 std::deque<int> Pather::returnPath() {
+	// Deque that will be returned
 	std::deque<int> path;
 
-	while (active_node->parent != nullptr) {
-		path.push_back(active_node->cameFrom);
+	// Backtrack through the active_nodes, adding their cameFrom value to the deque
+	while (active_node->getParent() != nullptr) {
+		path.push_back(active_node->getCameFrom());
 
-		node* parent = active_node->parent;
+		node* parent = active_node->getParent();
 		delete active_node;
 		active_node = parent;
 	}

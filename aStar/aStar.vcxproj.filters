@@ -33,6 +33,9 @@
     <ClCompile Include="Pather.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -50,5 +53,8 @@
     <ClInclude Include="Pather.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="node.h" />
   </ItemGroup>
 </Project>

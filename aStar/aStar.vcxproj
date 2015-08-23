@@ -160,6 +160,7 @@
     <ClCompile Include="Explorer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="node.cpp" />
     <ClCompile Include="Pather.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
@@ -169,6 +170,9 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pather.h" />
     <ClInclude Include="Tile.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="node.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

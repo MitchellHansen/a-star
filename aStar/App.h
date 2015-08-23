@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "Explorer.h"
 
+// 2d heap allocated array structure stolen off of stackOverflow
 template<typename T, int width, int height>
 class MultiArray {
 private:
@@ -13,8 +14,10 @@ public:
 	MultiArray() { data = new cols[width]; }
 	~MultiArray() { delete[] data; }
 };
+
 class App {
 public:
+
 	// Constants
 	static const int WINDOW_HEIGHT = 766;
 	static const int WINDOW_WIDTH = 1596;
@@ -28,17 +31,20 @@ public:
 
 private:
 
+	// Map and its data
 	Map map;
-	sf::Uint8* _pixelArray;
-	sf::Sprite pixel_array_sprite;
-	sf::Texture pixel_array_texture;
 
+	// The explorer that will traverse the map
 	Explorer* explorer;
 
 	// Art assets
 	sf::Texture* background_texture;
-
 	sf::Sprite backgroundSprite;
+
+	// Data required for hand drawing pixels
+	sf::Uint8* _pixelArray;
+	sf::Sprite pixel_array_sprite;
+	sf::Texture pixel_array_texture;
 
 	void Init();
 	void Input();
@@ -50,7 +56,7 @@ private:
 	// The events for the event handler
 	sf::Event event;
 
-	// Loop management data, black magic, need to redo
+	// ============= Loop data ==================
 	float time();
 
 	// Size of the physics steps to take

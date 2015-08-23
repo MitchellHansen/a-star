@@ -16,12 +16,13 @@ void App::Init() {
 	// Set up the background texture
 	background_texture = new sf::Texture();
 	background_texture->loadFromFile("background.png");
-
 	backgroundSprite.setTexture(*background_texture);
 
+	// Pixel array for drawing the tiles, explorer
 	_pixelArray = new sf::Uint8[WINDOW_WIDTH * WINDOW_HEIGHT * 4];
 	pixel_array_texture.create(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+	// Create the explorer, giving it a reference to the map data
 	explorer = new Explorer(&map);
 }
 
@@ -29,6 +30,8 @@ void App::Input() {
 	while (window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			window->close();
+
+		// Set the destination
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			sf::Vector2i mouse_position = sf::Mouse::getPosition(*window);
 			explorer->setDestination(sf::Vector2i(mouse_position.x/ 5, mouse_position.y/ 5)); 
@@ -49,7 +52,10 @@ void App::Input() {
 }
 
 void App::Update(double step_size) {
+
 	Input();
+
+	// Have the explorer go one move forward
 	explorer->move();
 }
 
@@ -57,6 +63,7 @@ void App::Render() {
 
 
 	// HOUSEKEEPING
+
 	// Get the physics fps for the last render cycle
 	physics_fps = physics_frame_count * render_fps;
 
@@ -70,23 +77,28 @@ void App::Render() {
 
 	// RENDERING
 
+	// Clear and draw a fresh background
 	window->clear(sf::Color::Blue);
 	window->draw(backgroundSprite);
 
-	sf::Vector2i pos;
+	// Clean up the pixel array and reset everything to 0's again
 	for (int i = 0; i < WINDOW_WIDTH * WINDOW_HEIGHT * 4; i++) {
 		_pixelArray[i] = 0;
 	}
 	
-	// Draw the tiles
+	// Color all the tiles
 	for (int x = 0; x < Map::CELLS_WIDTH; x++) {
 		for (int y = 0; y < Map::CELLS_HEIGHT; y++) {
 	
+			// Get the current cell position
+			sf::Vector2i pos;
 			pos.x = x;
 			pos.y = y;
+
+			// Use that to find the color of the tile at that position
 			sf::Color thing = map.getTile(pos)->getColor();
 			
-
+			// Fill the 4x4 pixel area taken up by the cell 
 			for (int x2 = 1; x2 < 5; x2++) {
 				for (int y2 = 1; y2 < 5; y2++) {
 				
@@ -104,6 +116,7 @@ void App::Render() {
 	}
 	
 	// Draw the explorer
+	// Basically the same as above, fills 4x4 area where the explorer is located
 	for (int x2 = 1; x2 < 5; x2++) {
 		for (int y2 = 1; y2 < 5; y2++) {
 
@@ -120,11 +133,12 @@ void App::Render() {
 		}
 	}
 	
+	// Update and draw the pixel array
 	pixel_array_texture.update(_pixelArray);
-	
 	pixel_array_sprite.setTexture(pixel_array_texture);
 	window->draw(pixel_array_sprite);
 	
+	// Finish!
 	window->display();
 }
 
