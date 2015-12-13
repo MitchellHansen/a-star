@@ -6,7 +6,7 @@
 
 // ========== Constructors =============
 App::App() {
-	window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SFML works!");
+	window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aStart Pathing Demo");
 }
 App::~App() { }
 
