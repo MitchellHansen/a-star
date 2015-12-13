@@ -57,4 +57,9 @@
   <ItemGroup>
     <None Include="node.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="screeny.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
