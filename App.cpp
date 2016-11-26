@@ -1,8 +1,12 @@
 #include "App.h"
-#include <windows.h>
 #include <iostream>
 #include "Map.h"
+#include <chrono>
 
+#ifdef linux
+#elif defined _WIN32
+#elif defined TARGET_OS_MAC
+#endif
 
 // ========== Constructors =============
 App::App() {
@@ -178,16 +182,17 @@ void App::Run() {
 }
 
 float App::time() {
-	static __int64 start = 0;
-	static __int64 frequency = 0;
 
-	if (start == 0) {
-		QueryPerformanceCounter((LARGE_INTEGER*)&start);
-		QueryPerformanceFrequency((LARGE_INTEGER*)&frequency);
-		return 0.0f;
+	static std::chrono::time_point<std::chrono::system_clock> start;
+	static bool started = false;
+
+	if (!started) {
+		start = std::chrono::system_clock::now();
+		started = true;
 	}
 
-	__int64 counter = 0;
-	QueryPerformanceCounter((LARGE_INTEGER*)&counter);
-	return (float)((counter - start) / double(frequency));
+	std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_time = now - start;
+	return static_cast<float>(elapsed_time.count());
+
 }
