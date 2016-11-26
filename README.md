@@ -7,4 +7,4 @@ Red = walkway
 Left click to change path
 
 
-![alt tag](https://github.com/MitchellHansen/aStar/blob/master/aStar/screeny.png)
+![alt tag](https://github.com/MitchellHansen/aStar/blob/master/screeny.png)
