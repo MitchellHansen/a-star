@@ -2,6 +2,8 @@
 
 Simple implementation of the a* algorithm 
 
+This is a particularly old project of mine so it suffers from OOP explosion and pretty bad code
+
 Blue = wall
 
 Red = walkway
