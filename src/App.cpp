@@ -19,7 +19,7 @@ void App::Init() {
 
 	// Set up the background texture
 	background_texture = new sf::Texture();
-	background_texture->loadFromFile("background.png");
+	background_texture->loadFromFile("../assets/background.png");
 	backgroundSprite.setTexture(*background_texture);
 
 	// Pixel array for drawing the tiles, explorer
