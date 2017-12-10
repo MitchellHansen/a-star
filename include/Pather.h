@@ -2,33 +2,37 @@
 #include <map>
 #include "App.h"
 #include <unordered_map>
-#include "node.h"
+#include "GraphNode.h"
+#include "Graph.h"
 
 class Pather {
 
 public:
 	// Constructor
-	Pather(Map* map_);
+	Pather(Graph* graph_);
 	~Pather();
 
 	// Reference to the map data
-	Map* map;
+	Graph* graph;
 
 	// Containers for the loop, probably inefficient as hell
-	std::unordered_map<node*, double> open_list;
-	std::unordered_map<node*, double> closed_list;
+	// open list are a list of neighbors we are currently considering
+	std::unordered_map<GraphNode*, double> open_list;
+	// closed list are the tiles we have traversed
+	std::unordered_map<GraphNode*, double> closed_list;
 	
 	// A stack allocated 2d array from a template I stole from stackOverflow
-	MultiArray<int, Map::CELLS_WIDTH , Map::CELLS_HEIGHT> visited_map;
+	//MultiArray<int, Map::CELLS_WIDTH , Map::CELLS_HEIGHT> visited_map;
 	
 	// Return a deque with the movement info to path to the end position from the start position
+	// This should return a list of indices for the vector<node*> list of neighbors each node has
 	std::deque<int> getPathTo(sf::Vector2i start, sf::Vector2i end);
 
 	// Returns the end node of the current path
-	sf::Vector2i getEndNodePosition();
+	sf::Vector2f getEndNodePosition();
 
 	// Returns the current active node
-	node* getActiveNode();
+    GraphNode* getActiveNode();
 
 private:
 	// Whether we couldn't find a path
@@ -46,11 +50,11 @@ private:
 	std::deque<int> path_list;
 
 	// Start positions node
-	node* start_node;
+	GraphNode* start_node;
 	// Current positions node
-	node* active_node;
+	GraphNode* active_node;
 	// End positions node
-	node* end_node;
+	GraphNode* end_node;
 
 };
 

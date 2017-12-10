@@ -1,36 +1,45 @@
 #include "App.h"
-#include <iostream>
-#include "Map.h"
-#include <chrono>
 
-#ifdef linux
-#elif defined _WIN32
-#elif defined TARGET_OS_MAC
-#endif
+/**
+ *  Specs
+ *     I want to be able to define a graph in any order and with any XY positioning of nodes
+ *     I want to be able to render these nodes and render their "connections" between each other
+ *     I want to be able to Apply the A* pathfinding algorithm to this graph and receive back a path to follow
+ *     I want to be able to render a path follower which will follow the received path and stop on obsticles
+ *     I want a gui (imgui) to allow me basic interaction with the graph
+ *
+ *
+ *  
+ *  Monolithic renderer or inbuilt render methods?
+ *
+ *
+ * Find neighbors = Just get the adjacency list
+ *
+ * Remove node:
+ *      Remove self from all ajdacent nodes
+ *
+ * Add node:
+ *      Set adjacency list
+ *      Add self to each node in adjacency list
+ *
+*/
 
-// ========== Constructors =============
+
 App::App() {
 	window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aStart Pathing Demo");
 }
-App::~App() { }
+App::~App() {
 
-// ========== Mutes =============
-void App::Init() {
-
-	// Set up the background texture
-	background_texture = new sf::Texture();
-	background_texture->loadFromFile("../assets/background.png");
-	backgroundSprite.setTexture(*background_texture);
-
-	// Pixel array for drawing the tiles, explorer
-	_pixelArray = new sf::Uint8[WINDOW_WIDTH * WINDOW_HEIGHT * 4];
-	pixel_array_texture.create(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	// Create the explorer, giving it a reference to the map data
-	explorer = new Explorer(&map);
 }
 
-void App::Input() {
+void App::Init() {
+    //Tile::set_spritesheet("assets/sprite_sheet_xml.xml", "assets/sprite_sheet.png");
+    graph.init();
+
+}
+
+void App::Input(double step_size) {
+
 	while (window->pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
 			window->close();
@@ -38,18 +47,12 @@ void App::Input() {
 		// Set the destination
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			sf::Vector2i mouse_position = sf::Mouse::getPosition(*window);
-			explorer->setDestination(sf::Vector2i(mouse_position.x/ 5, mouse_position.y/ 5)); 
+			//explorer->setDestination(sf::Vector2i(mouse_position.x/ 5, mouse_position.y/ 5));
 		}
 		
 		if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Q) {
-				explorer->setDestination(sf::Vector2i(20, 20));
-			}
-			if (event.key.code == sf::Keyboard::W) {
-				explorer->setDestination(sf::Vector2i(50, 50));
-			}
-			if (event.key.code == sf::Keyboard::E) {
-				explorer->setDestination(sf::Vector2i(100, 12));
+			    window->close();
 			}
 		}
 	}
@@ -57,105 +60,33 @@ void App::Input() {
 
 void App::Update(double step_size) {
 
-	Input();
+	Input(step_size);
+//    explorer->update(step_size);
+  
 
-	// Have the explorer go one move forward
-	explorer->move();
 }
 
 void App::Render() {
 
-
-	// HOUSEKEEPING
-
-	// Get the physics fps for the last render cycle
-	physics_fps = physics_frame_count * render_fps;
-
-	// Frame time in seconds
-	frame_time = delta_time * 1000;
-
-	// And the render fps
-	render_fps = 1000 / frame_time;
-
-
-
-	// RENDERING
-
 	// Clear and draw a fresh background
-	window->clear(sf::Color::Blue);
-	window->draw(backgroundSprite);
+	window->clear(sf::Color(100, 149, 237, 255));
 
-	// Clean up the pixel array and reset everything to 0's again
-	for (int i = 0; i < WINDOW_WIDTH * WINDOW_HEIGHT * 4; i++) {
-		_pixelArray[i] = 0;
-	}
-	
-	// Color all the tiles
-	for (int x = 0; x < Map::CELLS_WIDTH; x++) {
-		for (int y = 0; y < Map::CELLS_HEIGHT; y++) {
-	
-			// Get the current cell position
-			sf::Vector2i pos;
-			pos.x = x;
-			pos.y = y;
 
-			// Use that to find the color of the tile at that position
-			sf::Color thing = map.getTile(pos)->getColor();
-			
-			// Fill the 4x4 pixel area taken up by the cell 
-			for (int x2 = 1; x2 < 5; x2++) {
-				for (int y2 = 1; y2 < 5; y2++) {
-				
-					int pixel_x = (x * 5) + x2;
-					int pixel_y = (y * 5) + y2;
-
-					_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4] =     thing.r;            // Red
-					_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 1] = thing.g;            // Green
-					_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 2] = thing.b;            // Blue
-					_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 3] = thing.a;            // Alpha
-
-				}
-			}
-		}
-	}
-	
-	// Draw the explorer
-	// Basically the same as above, fills 4x4 area where the explorer is located
-	for (int x2 = 1; x2 < 5; x2++) {
-		for (int y2 = 1; y2 < 5; y2++) {
-
-			int pixel_x = (explorer->getPosition().x * 5) + x2;
-			int pixel_y = (explorer->getPosition().y * 5) + y2;
-			
-			sf::Color color = explorer->getColor();
-
-			_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4]     = color.r;            // Red
-			_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 1] = color.g;            // Green
-			_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 2] = color.b;            // Blue
-			_pixelArray[(pixel_y * WINDOW_WIDTH + pixel_x) * 4 + 3] = color.a;            // Alpha
-
-		}
-	}
-	
-	// Update and draw the pixel array
-	pixel_array_texture.update(_pixelArray);
-	pixel_array_sprite.setTexture(pixel_array_texture);
-	window->draw(pixel_array_sprite);
-	
 	// Finish!
 	window->display();
 }
 
 
 void App::Run() {
+
 	Init();
 
 	while (window->isOpen()) {
+
 		// Time since app start
 		elapsed_time = time();
 
 		// Time between last frame start and this frame
-		// 2 seconds = 30 seconds - 28 seconds
 		delta_time = elapsed_time - current_time;
 		current_time = elapsed_time;
 
@@ -168,13 +99,12 @@ void App::Run() {
 
 		// While there is time left
 		while ((accumulator_time - step_size) >= step_size) {
+
 			// Take away the time we will be simulating
 			accumulator_time -= step_size;
 
 			// Update the game for the timestep
 			Update(step_size);
-
-			physics_frame_count++;
 		}
 
 		Render();

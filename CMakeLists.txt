@@ -16,7 +16,7 @@ endif()
 
 set(SFML_COMPONENTS graphics window system network audio)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(SFML 2.4 COMPONENTS ${SFML_COMPONENTS} REQUIRED)
+find_package(SFML 2.3 COMPONENTS ${SFML_COMPONENTS} REQUIRED)
 message(STATUS "SFML found: ${SFML_FOUND}")
 
 if (WIN32)

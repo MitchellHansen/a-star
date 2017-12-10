@@ -1,11 +1,9 @@
 #include "Explorer.h"
-#include <iostream>
-#include "Pather.h"
 
-Explorer::Explorer(Map* map_) {
+Explorer::Explorer(Graph* graph_) {
 	color = sf::Color::Yellow;
 	position = sf::Vector2i(6, 10);
-	map = map_;
+    graph = graph_;
 }
 
 
@@ -26,39 +24,12 @@ void Explorer::setDestination(sf::Vector2i destination_) {
 	plan(destination_);
 }
 
-bool Explorer::move() {
+bool Explorer::update(double step_size) {
 
 	// While there are moves for us to take
 	if (!movement_stack.empty()) {
 		bool valid = false; // If the next move is valid, collision
 		int x = movement_stack.back();
-
-		switch (x) {
-		case 0: // North
-			if (!map->getTile(position.x, position.y - 1)->isSolid()) {  // If the tile isn't solid
-				valid = true;											 // Set the move to valid
-				position = sf::Vector2i(position.x, position.y - 1);	 // Update the Explorers position
-			}
-			break;
-		case 1: // East
-			if (!map->getTile(position.x + 1, position.y)->isSolid()) {
-				valid = true;
-				position = sf::Vector2i(position.x + 1, position.y);
-			}
-			break;
-		case 2: // South
-			if (!map->getTile(position.x, position.y + 1)->isSolid()) {
-				valid = true;
-				position = sf::Vector2i(position.x, position.y + 1);
-			}
-			break;
-		case 3: // West
-			if (!map->getTile(position.x - 1, position.y)->isSolid()) {
-				valid = true;
-				position = sf::Vector2i(position.x - 1, position.y);
-			}
-			break;
-		}
 
 		// If the path was blocked
 		if (!valid) {
@@ -82,7 +53,7 @@ bool Explorer::move() {
 bool Explorer::plan(sf::Vector2i destination_) {
 	
 	// Create a new pather with the map data
-	Pather pather(map);
+	Pather pather(graph);
 
 	// Get the movement list from the pather
 	movement_stack = pather.getPathTo(position, destination_);

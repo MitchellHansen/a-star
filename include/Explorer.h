@@ -1,12 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <stack>
-#include "Map.h"
+#include <iostream>
+#include "Pather.h"
+#include "Graph.h"
+#include "GraphNode.h"
 
 class Explorer {
 public:
 	// Constructors
-	Explorer(Map* map_);
+	Explorer(Graph* graph);
 	~Explorer();
 
 	// Getters
@@ -17,7 +20,7 @@ public:
 	void setDestination(sf::Vector2i destination_);
 	
 	// Follow the pathlist for one move
-	bool move();
+	bool update(double step_size);
 
 private:
 	// Color that will be drawn
@@ -26,7 +29,7 @@ private:
 	sf::Vector2i position;
 	
 	// Reference to the map data
-	Map* map;
+	Graph* graph;
 
 	// Moves list that will be filled with plan(), and executed by move()
 	std::deque<int> movement_stack;
