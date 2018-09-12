@@ -12,4 +12,4 @@ Yellow = pather
 
 Left click to change path
 
-![alt tag](https://github.com/MitchellHansen/aStar/blob/master/screeny.png)
+![alt tag](https://github.com/MitchellHansen/a-star/blob/master/assets/screeny.png)
