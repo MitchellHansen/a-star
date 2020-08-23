@@ -28,12 +28,13 @@
 App::App() {
 	window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aStart Pathing Demo");
 }
+
 App::~App() {
 
 }
 
 void App::Init() {
-    //Tile::set_spritesheet("assets/sprite_sheet_xml.xml", "assets/sprite_sheet.png");
+    GraphNode::set_spritesheet("../assets/sprite_sheet_xml.xml", "../assets/sprite_sheet.png");
     graph.init();
 
 }

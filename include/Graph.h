@@ -4,7 +4,7 @@
 #include <list>
 #include <iterator>
 #include "GraphNode.h"
-
+#include <queue>
 
 class Graph : sf::Drawable {
 
@@ -20,8 +20,7 @@ public:
 
     std::vector <GraphNode*> pathfind(GraphNode* start, GraphNode* finish);
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states);
-
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {};
 
 	void init();
 private:
